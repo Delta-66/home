@@ -10,14 +10,14 @@
     "link": "http://127.0.0.1:4322/"
   },
   {
-    "icon": "Cloud",
-    "name": "网盘",
-    "link": ""
-  },
-  {
     "icon": "CompactDisc",
     "name": "音乐",
     "link": "https://y.qq.com/n/ryqq_v2/playlist/7909661301"
+  },
+  {
+    "icon": "Cloud",
+    "name": "网盘",
+    "link": ""
   },
   {
     "icon": "Compass",
