@@ -7,7 +7,7 @@
     v-show="store.musicOpenState"
   >
     <div class="btns">
-      <span @click="openMusicList()">音乐列表</span>
+      <span @click="openMusicList()">{{ playerData.server === "tencent" ? "可播放歌曲" : "音乐列表" }}</span>
       <span @click="store.musicOpenState = false">回到一言</span>
     </div>
     <div class="control">

@@ -20,7 +20,7 @@ export default ({ mode }) =>
       Components({
         resolvers: [ElementPlusResolver()],
       }),
-      VitePWA({
+      process.env.ENABLE_PWA === "1" && VitePWA({
         registerType: "autoUpdate",
         workbox: {
           skipWaiting: true,

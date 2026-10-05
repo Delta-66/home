@@ -25,7 +25,11 @@
             <div
               class="item cards"
               :style="index < 3 ? 'margin-bottom: 20px' : null"
+              role="button"
+              tabindex="0"
               @click="jumpLink(item)"
+              @keydown.enter.prevent="jumpLink(item)"
+              @keydown.space.prevent="jumpLink(item)"
             >
               <Icon size="26">
                 <component :is="siteIcon[item.icon]" />
@@ -43,7 +47,7 @@
 <script setup>
 import { Icon } from "@vicons/utils";
 // 可前往 https://www.xicons.org 自行挑选并在此处引入
-import { Link, Blog, CompactDisc, Cloud, Compass, Book, Fire, LaptopCode } from "@vicons/fa"; // 注意使用正确的类别
+import { Link, Blog, CompactDisc, Cloud, Compass, Book } from "@vicons/fa"; // 注意使用正确的类别
 import { mainStore } from "@/store";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination, Mousewheel } from "swiper/modules";
@@ -68,16 +72,28 @@ const siteIcon = {
   CompactDisc,
   Compass,
   Book,
-  Fire,
-  LaptopCode,
 };
 
 // 链接跳转
 const jumpLink = (data) => {
-  if (data.name === "音乐" && store.musicClick) {
-    if (typeof $openList === "function") $openList();
-  } else {
+  if (data.name === "音乐" && import.meta.env.VITE_SONG_SERVER === "tencent") {
+    if (store.musicIsOk && typeof window.$openList === "function") {
+      window.$openList();
+    } else {
+      ElMessage({ message: "播放器正在加载，请稍后重试", grouping: true });
+    }
+    return;
+  }
+  if (
+    data.name === "音乐" &&
+    store.musicClick &&
+    typeof window.$openList === "function"
+  ) {
+    window.$openList();
+  } else if (data.link) {
     window.open(data.link, "_blank");
+  } else {
+    ElMessage({ message: `「${data.name}」链接待填写`, grouping: true });
   }
 };
 

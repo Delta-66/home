@@ -14,9 +14,15 @@ pinia.use(piniaPluginPersistedstate);
 app.use(pinia);
 app.mount("#app");
 
-// PWA
-navigator.serviceWorker.addEventListener("controllerchange", () => {
-  // 弹出更新提醒
-  console.log("站点已更新，刷新后生效");
-  ElMessage("站点已更新，刷新后生效");
-});
+// Remove the old offline cache from local previews so edits appear after refresh.
+if (
+  "serviceWorker" in navigator &&
+  ["127.0.0.1", "localhost"].includes(window.location.hostname)
+) {
+  window.addEventListener("load", async () => {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(registrations.map((registration) => registration.unregister()));
+    const cacheNames = await caches.keys();
+    await Promise.all(cacheNames.map((cacheName) => caches.delete(cacheName)));
+  });
+}

@@ -7,10 +7,19 @@ import fetchJsonp from "fetch-jsonp";
 
 // 获取音乐播放列表
 export const getPlayerList = async (server, type, id) => {
-  const res = await fetch(
-    `${import.meta.env.VITE_SONG_API}?server=${server}&type=${type}&id=${id}`,
-  );
+  const url = new URL(import.meta.env.VITE_SONG_API);
+  url.searchParams.set("server", server);
+  url.searchParams.set("type", type);
+  url.searchParams.set("id", id);
+  if (server === "tencent") url.searchParams.set("playable", "1");
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`音乐接口返回 ${res.status}`);
+  }
   const data = await res.json();
+  if (!Array.isArray(data) || !data.length || typeof data[0].url !== "string") {
+    throw new Error("音乐接口没有返回可用歌单");
+  }
 
   if (data[0].url.startsWith("@")) {
     // eslint-disable-next-line no-unused-vars
