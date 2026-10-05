@@ -39,6 +39,25 @@ npm run dev
 
 QQ 音乐分享链接如 `https://y.qq.com/n/ryqq_v2/playlist/7909661301`，末尾的数字就是歌单 ID。填入真实 ID 后运行 `npm run build`；本地启动脚本使用已构建的 `dist/`，因此改完配置后需要重新构建。
 
+## 网址集
+
+主页中的“网址集”入口打开 `/bookmarks/`，可按分类浏览、筛选常用网站或搜索。网址内容在 [`public/bookmarks/bookmarks.json`](./public/bookmarks/bookmarks.json) 中维护；当前六条为示例收藏，可以直接替换。
+
+在 `categories` 中添加分类，再在 `links` 中添加网址。例如：
+
+```json
+{
+  "name": "网站名称",
+  "url": "https://example.com/",
+  "description": "一句话说明这个网站的用途",
+  "category": "research",
+  "tags": ["论文", "工具"],
+  "favorite": true
+}
+```
+
+`category` 要对应 `categories` 中的 `id`；`tags` 和 `favorite` 可省略。网址需以 `https://` 或 `http://` 开头。保存后运行 `npm run build`，刷新 `/bookmarks/` 即可看到新内容。此页面会作为静态文件复制到 `dist/bookmarks/`，无须单独启动服务。
+
 ## 来源与许可
 
 本项目基于原作者 [imsyy](https://github.com/imsyy) 的 [imsyy/home](https://github.com/imsyy/home) 修改，继续遵循原项目的 [MIT License](./LICENSE)。原项目的代码及著作权声明归原作者所有；本仓库中的修改由我完成。此仓库与原作者没有官方关联。
