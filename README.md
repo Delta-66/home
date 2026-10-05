@@ -56,7 +56,7 @@ QQ 音乐分享链接如 `https://y.qq.com/n/ryqq_v2/playlist/7909661301`，末�
 }
 ```
 
-`category` 要对应 `categories` 中的 `id`；`tags` 和 `favorite` 可省略。网址需以 `https://` 或 `http://` 开头。保存后运行 `npm run build`，刷新 `/webcollections/` 即可看到新内容。此页面会作为静态文件复制到 `dist/webcollections/`，无须单独启动服务。旧地址 `/bookmarks/` 会跳转到新地址。
+`category` 要对应 `categories` 中的 `id`；`tags` 和 `favorite` 可省略。网址需以 `https://` 或 `http://` 开头。保存后运行 `npm run build`，刷新 `/webcollections/` 即可看到新内容。此页面会作为静态文件复制到 `dist/webcollections/`，无须单独启动服务。
 
 ## 来源与许可
 
