@@ -48,6 +48,19 @@ export const getPlayerList = async (server, type, id) => {
   }
 };
 
+// 获取 QQ 音乐原歌单的歌曲总数，用于说明可播放数量与原歌单的差异
+export const getPlaylistTotal = async (server, type, id) => {
+  if (server !== "tencent" || type !== "playlist") return null;
+  const url = new URL(import.meta.env.VITE_SONG_API);
+  url.searchParams.set("server", server);
+  url.searchParams.set("type", type);
+  url.searchParams.set("id", id);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`音乐接口返回 ${res.status}`);
+  const data = await res.json();
+  return Array.isArray(data) ? data.length : null;
+};
+
 /**
  * 一言
  */

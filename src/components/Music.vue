@@ -58,6 +58,12 @@
           <div class="playlist-heading">
             <span>当前歌单</span>
             <strong>{{ playlistOptions[activePlaylistIndex]?.name }}</strong>
+            <small v-if="playableSongCount !== null" class="playlist-availability">
+              本站可播放 {{ playableSongCount }} 首
+              <template v-if="totalSongCount !== null && totalSongCount > playableSongCount">
+                · QQ 音乐原歌单共 {{ totalSongCount }} 首，其余歌曲暂无法在本站播放
+              </template>
+            </small>
           </div>
           <Player
             ref="playerRef"
@@ -68,6 +74,7 @@
             :volume="volumeNum"
             :listFolded="musicListShow"
             :listMaxHeight="360"
+            @loaded="playableSongCount = $event"
           />
           <button class="choose-playlist" type="button" @click="playlistPickerShow = true">
             <span>选择歌单</span>
@@ -114,6 +121,7 @@ import {
   VolumeNotice,
 } from "@icon-park/vue-next";
 import Player from "@/components/Player.vue";
+import { getPlaylistTotal } from "@/api";
 import { mainStore } from "@/store";
 import additionalPlaylists from "@/assets/playlists.json";
 const store = mainStore();
@@ -126,6 +134,8 @@ const volumeNum = ref(store.musicVolume ? store.musicVolume : 0.7);
 const musicListShow = ref(false);
 const playlistPickerShow = ref(false);
 const playerRef = ref(null);
+const playableSongCount = ref(null);
+const totalSongCount = ref(null);
 const playerData = reactive({
   server: import.meta.env.VITE_SONG_SERVER,
   type: import.meta.env.VITE_SONG_TYPE,
@@ -148,12 +158,30 @@ const selectPlaylist = (index) => {
   playlistPickerShow.value = false;
   if (index === activePlaylistIndex.value) return;
   activePlaylistIndex.value = index;
+  playableSongCount.value = null;
   store.musicIsOk = false;
   store.setPlayerState(true);
   store.setPlayerData(null, null);
   store.setPlayerLrc("歌词加载中");
   Object.assign(playerData, playlistOptions[index]);
 };
+
+watch(
+  () => [playerData.server, playerData.type, playerData.id],
+  async ([server, type, id], _, onCleanup) => {
+    let cancelled = false;
+    onCleanup(() => { cancelled = true; });
+    totalSongCount.value = null;
+    if (!id) return;
+    try {
+      const count = await getPlaylistTotal(server, type, id);
+      if (!cancelled) totalSongCount.value = count;
+    } catch (error) {
+      console.warn("获取原歌单歌曲总数失败", error);
+    }
+  },
+  { immediate: true },
+);
 
 // 开启播放列表
 const openMusicList = () => {
@@ -368,6 +396,11 @@ watch(
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+      }
+      .playlist-availability {
+        color: #ffffffb3;
+        font-size: 12px;
+        line-height: 1.4;
       }
     }
     .choose-playlist {
