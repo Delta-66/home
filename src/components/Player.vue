@@ -84,12 +84,15 @@ const listHeight = computed(() => {
 });
 
 // 初始化播放器
+let isMounted = true;
 onMounted(async () => {
   try {
     const res = await getPlayerList(props.songServer, props.songType, props.songId);
+    if (!isMounted) return;
     playList.value = res;
     store.musicIsOk = true;
   } catch (err) {
+    if (!isMounted) return;
     console.error(err);
     store.musicIsOk = false;
     ElMessage({
@@ -101,6 +104,9 @@ onMounted(async () => {
       }),
     });
   }
+});
+onBeforeUnmount(() => {
+  isMounted = false;
 });
 
 // 播放
@@ -144,16 +150,17 @@ const onTimeUp = () => {
 
 // 切换播放暂停事件
 const playToggle = () => {
-  player.value.toggle();
+  player.value?.toggle();
 };
 
 // 切换音量事件
 const changeVolume = (value) => {
-  player.value.setVolume(value, false);
+  player.value?.setVolume(value, false);
 };
 
 // 切换上下曲
 const changeSong = (type) => {
+  if (!player.value) return;
   type === 0 ? player.value.skipBack() : player.value.skipForward();
   nextTick(() => {
     player.value.play();
@@ -162,7 +169,7 @@ const changeSong = (type) => {
 
 // 切换歌曲列表状态
 const toggleList = () => {
-  player.value.toggleList();
+  player.value?.toggleList();
 };
 
 // 加载音频错误

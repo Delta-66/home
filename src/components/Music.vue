@@ -55,13 +55,47 @@
             fill="#ffffff60"
             @click="closeMusicList()"
           />
+          <div class="playlist-heading">
+            <span>当前歌单</span>
+            <strong>{{ playlistOptions[activePlaylistIndex]?.name }}</strong>
+          </div>
           <Player
             ref="playerRef"
+            :key="`${playerData.server}-${playerData.type}-${playerData.id}`"
             :songServer="playerData.server"
             :songType="playerData.type"
             :songId="playerData.id"
             :volume="volumeNum"
+            :listFolded="musicListShow"
+            :listMaxHeight="360"
           />
+          <button class="choose-playlist" type="button" @click="playlistPickerShow = true">
+            <span>选择歌单</span>
+            <span aria-hidden="true">›</span>
+          </button>
+          <Transition name="fade">
+            <div v-if="playlistPickerShow" class="playlist-picker" role="dialog" aria-label="选择歌单">
+              <div class="picker-heading">
+                <div><span>PLAYLISTS</span><h2>选择歌单</h2></div>
+                <button type="button" aria-label="返回歌曲列表" @click="playlistPickerShow = false">×</button>
+              </div>
+              <div class="playlist-options">
+                <button
+                  v-for="(playlist, index) in playlistOptions"
+                  :key="`${playlist.server}-${playlist.id}-${index}`"
+                  class="playlist-option"
+                  :class="{ active: index === activePlaylistIndex }"
+                  type="button"
+                  :aria-current="index === activePlaylistIndex ? 'true' : undefined"
+                  @click="selectPlaylist(index)"
+                >
+                  <span class="playlist-index">{{ String(index + 1).padStart(2, "0") }}</span>
+                  <span class="playlist-info"><strong>{{ playlist.name }}</strong><small>{{ playlist.server === "tencent" ? "QQ 音乐" : "网易云音乐" }}</small></span>
+                  <span class="playlist-arrow" aria-hidden="true">{{ index === activePlaylistIndex ? "✓" : "↗" }}</span>
+                </button>
+              </div>
+            </div>
+          </Transition>
         </div>
       </Transition>
     </div>
@@ -81,6 +115,7 @@ import {
 } from "@icon-park/vue-next";
 import Player from "@/components/Player.vue";
 import { mainStore } from "@/store";
+import additionalPlaylists from "@/assets/playlists.json";
 const store = mainStore();
 
 // 音量条数据
@@ -89,33 +124,59 @@ const volumeNum = ref(store.musicVolume ? store.musicVolume : 0.7);
 
 // 播放列表数据
 const musicListShow = ref(false);
+const playlistPickerShow = ref(false);
 const playerRef = ref(null);
 const playerData = reactive({
   server: import.meta.env.VITE_SONG_SERVER,
   type: import.meta.env.VITE_SONG_TYPE,
   id: import.meta.env.VITE_SONG_ID,
 });
+const playlistOptions = [
+  ...(playerData.id ? [{ name: import.meta.env.VITE_SONG_NAME || "默认歌单", ...playerData }] : []),
+  ...additionalPlaylists
+    .filter((playlist) => playlist.name && playlist.id && playlist.server)
+    .map((playlist) => ({ ...playlist, type: "playlist" })),
+];
+const activePlaylistIndex = ref(0);
+
+if (!playerData.id && playlistOptions.length) {
+  Object.assign(playerData, playlistOptions[0]);
+}
+
+const selectPlaylist = (index) => {
+  if (!playlistOptions[index]) return;
+  playlistPickerShow.value = false;
+  if (index === activePlaylistIndex.value) return;
+  activePlaylistIndex.value = index;
+  store.musicIsOk = false;
+  store.setPlayerState(true);
+  store.setPlayerData(null, null);
+  store.setPlayerLrc("歌词加载中");
+  Object.assign(playerData, playlistOptions[index]);
+};
 
 // 开启播放列表
 const openMusicList = () => {
   musicListShow.value = true;
-  playerRef.value.toggleList();
+  playlistPickerShow.value = false;
+  playerRef.value?.toggleList();
 };
 
 // 关闭播放列表
 const closeMusicList = () => {
   musicListShow.value = false;
-  playerRef.value.toggleList();
+  playlistPickerShow.value = false;
+  playerRef.value?.toggleList();
 };
 
 // 音乐播放暂停
 const changePlayState = () => {
-  playerRef.value.playToggle();
+  playerRef.value?.playToggle();
 };
 
 // 音乐上下曲
 const changeMusicIndex = (type) => {
-  playerRef.value.changeSong(type);
+  playerRef.value?.changeSong(type);
 };
 
 onMounted(() => {
@@ -137,7 +198,7 @@ watch(
   () => volumeNum.value,
   (value) => {
     store.musicVolume = value;
-    playerRef.value.changeVolume(store.musicVolume);
+    playerRef.value?.changeVolume(store.musicVolume);
   },
 );
 </script>
@@ -264,10 +325,11 @@ watch(
     display: flex;
     align-items: center;
     justify-content: center;
-    top: calc(50% - 300px);
+    flex-direction: column;
+    top: calc(50% - 320px);
     left: calc(50% - 320px);
     width: 640px;
-    height: 600px;
+    height: 640px;
     background-color: #ffffff66;
     border-radius: 6px;
     z-index: 999;
@@ -288,6 +350,104 @@ watch(
       &:active {
         transform: scale(0.95);
       }
+    }
+    .playlist-heading {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 80%;
+      margin-bottom: 14px;
+      color: #fff;
+      span {
+        color: #ffffffb3;
+        font-size: 12px;
+      }
+      strong {
+        font-size: 18px;
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+    .choose-playlist {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 80%;
+      margin-top: 16px;
+      padding: 10px 16px;
+      border: 1px solid #ffffff66;
+      border-radius: 6px;
+      background: #ffffff26;
+      color: #fff;
+      font: inherit;
+      cursor: pointer;
+      &:hover { background: #ffffff40; }
+      span:last-child { font-size: 22px; line-height: 1; }
+    }
+    .playlist-picker {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      padding: 44px 52px;
+      border-radius: 6px;
+      background: #536657ed;
+      backdrop-filter: blur(22px);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      .picker-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 24px;
+        span { font-size: 11px; letter-spacing: 0.14em; color: #ffffffa8; }
+        h2 { margin: 5px 0 0; font-size: 24px; font-weight: 600; }
+        button {
+          width: 30px;
+          height: 30px;
+          border: 1px solid #ffffff80;
+          border-radius: 50%;
+          background: #ffffff26;
+          color: #fff;
+          font-size: 22px;
+          line-height: 1;
+          cursor: pointer;
+        }
+      }
+      .playlist-options { min-height: 0; overflow-y: auto; display: grid; gap: 10px; align-content: start; }
+      .playlist-option {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        width: 100%;
+        padding: 16px 18px;
+        border: 1px solid #ffffff38;
+        border-radius: 6px;
+        background: #ffffff1f;
+        color: #fff;
+        text-align: left;
+        cursor: pointer;
+        &:hover, &.active { background: #ffffff38; border-color: #ffffff66; }
+        .playlist-index { color: #ffffffa8; font-size: 12px; }
+        .playlist-info {
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+          gap: 3px;
+          min-width: 0;
+          strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; }
+          small { color: #ffffffa8; font-size: 11px; }
+        }
+        .playlist-arrow { font-size: 20px; }
+      }
+    }
+    @media (max-width: 720px) {
+      top: 50%;
+      transform: translateY(-50%);
+      height: min(640px, calc(100vh - 32px));
+      .playlist-picker { padding: 38px 24px; }
     }
   }
 }

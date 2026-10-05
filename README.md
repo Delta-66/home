@@ -26,6 +26,19 @@ npm run dev
 
 默认在 `http://localhost:3000/` 预览。发布前运行 `npm run build`，静态文件会生成在 `dist/`。
 
+## 添加更多歌单
+
+现有歌单继续由 `.env` 中的 `VITE_SONG_SERVER`、`VITE_SONG_TYPE` 和 `VITE_SONG_ID` 设置；`VITE_SONG_NAME` 决定它在播放器里显示的名称。打开“可播放歌曲”时会先进入这个歌单，列表上方显示名称、下方有“选择歌单”按钮。要加入其他歌单，编辑 [`src/assets/playlists.json`](./src/assets/playlists.json)，把新歌单写成数组项，例如：
+
+```json
+[
+  { "name": "我的 QQ 歌单", "server": "tencent", "id": "另一个歌单ID" },
+  { "name": "我的网易云歌单", "server": "netease", "id": "网易云歌单ID" }
+]
+```
+
+QQ 音乐分享链接如 `https://y.qq.com/n/ryqq_v2/playlist/7909661301`，末尾的数字就是歌单 ID。填入真实 ID 后运行 `npm run build`；本地启动脚本使用已构建的 `dist/`，因此改完配置后需要重新构建。
+
 ## 来源与许可
 
 本项目基于原作者 [imsyy](https://github.com/imsyy) 的 [imsyy/home](https://github.com/imsyy/home) 修改，继续遵循原项目的 [MIT License](./LICENSE)。原项目的代码及著作权声明归原作者所有；本仓库中的修改由我完成。此仓库与原作者没有官方关联。
