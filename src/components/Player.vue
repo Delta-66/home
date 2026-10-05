@@ -27,7 +27,6 @@ import { mainStore } from "@/store";
 import APlayer from "@worstone/vue-aplayer";
 
 const store = mainStore();
-const emit = defineEmits(["loaded"]);
 
 // 获取播放器 DOM
 const player = ref(null);
@@ -92,7 +91,6 @@ onMounted(async () => {
     if (!isMounted) return;
     playList.value = res;
     store.musicIsOk = true;
-    emit("loaded", res.length);
   } catch (err) {
     if (!isMounted) return;
     console.error(err);
