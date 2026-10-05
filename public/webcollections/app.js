@@ -116,7 +116,7 @@ document.addEventListener("keydown", (event) => {
 
 const loadBookmarks = async () => {
   try {
-    const response = await fetch("./bookmarks.json", { cache: "no-store" });
+    const response = await fetch("./webcollections.json", { cache: "no-store" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     if (!Array.isArray(data.categories) || !Array.isArray(data.links)) {

@@ -41,7 +41,7 @@ QQ 音乐分享链接如 `https://y.qq.com/n/ryqq_v2/playlist/7909661301`，末�
 
 ## 网址集
 
-主页中的“网址集”入口打开 `/bookmarks/`，可按分类浏览、筛选常用网站或搜索。网址内容在 [`public/bookmarks/bookmarks.json`](./public/bookmarks/bookmarks.json) 中维护；当前六条为示例收藏，可以直接替换。
+主页中的“网址集”入口打开 `/webcollections/`，可按分类浏览、筛选常用网站或搜索。网址内容在 [`public/webcollections/webcollections.json`](./public/webcollections/webcollections.json) 中维护；当前六条为示例收藏，可以直接替换。
 
 在 `categories` 中添加分类，再在 `links` 中添加网址。例如：
 
@@ -56,7 +56,7 @@ QQ 音乐分享链接如 `https://y.qq.com/n/ryqq_v2/playlist/7909661301`，末�
 }
 ```
 
-`category` 要对应 `categories` 中的 `id`；`tags` 和 `favorite` 可省略。网址需以 `https://` 或 `http://` 开头。保存后运行 `npm run build`，刷新 `/bookmarks/` 即可看到新内容。此页面会作为静态文件复制到 `dist/bookmarks/`，无须单独启动服务。
+`category` 要对应 `categories` 中的 `id`；`tags` 和 `favorite` 可省略。网址需以 `https://` 或 `http://` 开头。保存后运行 `npm run build`，刷新 `/webcollections/` 即可看到新内容。此页面会作为静态文件复制到 `dist/webcollections/`，无须单独启动服务。旧地址 `/bookmarks/` 会跳转到新地址。
 
 ## 来源与许可
 

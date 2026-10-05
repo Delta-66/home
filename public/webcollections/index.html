@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#12251f" />
+    <meta name="description" content="硫硫氮的网址收藏夹，收集研究、开发和日常使用的好网站。" />
+    <link rel="icon" href="/images/icon/favicon.ico" />
+    <link rel="stylesheet" href="./style.css" />
+    <title>网址集 · 硫硫氮</title>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <div class="background" aria-hidden="true"></div>
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="brand" href="/" aria-label="返回硫硫氮的主页">
+          <span class="brand-mark">N<span>.</span></span>
+          <span class="brand-name">硫硫氮 <small>/ LINK LIBRARY</small></span>
+        </a>
+        <a class="home-link" href="/"><span aria-hidden="true">←</span> 返回主页</a>
+      </header>
+
+      <main>
+        <section class="hero" aria-labelledby="page-title">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="eyebrow-line"></span> MY COLLECTION / 私人网址集</p>
+            <h1 id="page-title">把喜欢的地方，<br /><em>收藏起来。</em></h1>
+            <p class="hero-description">
+              研究、创作，还有日常会用到的那些网站。<br />从这里出发，去往值得反复打开的地方。
+            </p>
+          </div>
+          <div class="hero-graphic" aria-hidden="true">
+            <div class="orbit orbit-outer"></div>
+            <div class="orbit orbit-inner"></div>
+            <span class="spark">✳</span>
+            <span class="graphic-label">A LITTLE CORNER<br />OF THE INTERNET</span>
+          </div>
+        </section>
+
+        <div class="collection-layout">
+          <aside class="category-panel" aria-label="收藏分类">
+            <div class="section-kicker">EXPLORE / 浏览</div>
+            <h2>收藏目录</h2>
+            <nav id="category-list" class="category-list" aria-label="按分类筛选"></nav>
+            <div class="sidebar-note">
+              <span class="note-dot"></span> 用分类与搜索，找到想去的地方。
+            </div>
+          </aside>
+
+          <section class="library" aria-labelledby="collection-title">
+            <div class="library-header">
+              <div>
+                <div class="section-kicker">THE ARCHIVE / 收藏</div>
+                <h2 id="collection-title">
+                  全部收藏 <span id="result-count" class="result-count">00</span>
+                </h2>
+              </div>
+              <label class="search-box">
+                <span class="search-icon" aria-hidden="true">⌕</span>
+                <span class="visually-hidden">搜索收藏的网址</span>
+                <input
+                  id="search-input"
+                  type="search"
+                  placeholder="搜索网站或关键词"
+                  autocomplete="off"
+                />
+                <span class="search-hint" aria-hidden="true">/</span>
+              </label>
+            </div>
+            <div id="bookmark-grid" class="bookmark-grid"></div>
+            <div id="empty-state" class="empty-state" hidden>
+              <span aria-hidden="true">⌕</span>
+              <h3>没有找到匹配的网址</h3>
+              <p>换个关键词，或者选择其他分类试试。</p>
+            </div>
+            <p id="load-error" class="load-error" role="alert" hidden>
+              网址集暂时无法加载，请检查书签数据文件。
+            </p>
+          </section>
+        </div>
+      </main>
+
+      <footer class="site-footer">
+        <span>硫硫氮 · 网址集</span><span>COLLECTED WITH CURIOSITY <b>✳</b></span>
+      </footer>
+    </div>
+  </body>
+</html>
