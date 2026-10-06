@@ -6,13 +6,13 @@
       class="bg"
       alt="cover"
       @load="imgLoadComplete"
-      @error.once="imgLoadError"
+      @error="imgLoadError"
       @animationend="imgAnimationEnd"
     />
     <div :class="store.backgroundShow ? 'gray hidden' : 'gray'" />
     <Transition name="fade" mode="out-in">
       <a
-        v-if="store.backgroundShow && store.coverType != '3'"
+        v-if="store.backgroundShow"
         class="down"
         :href="bgUrl"
         target="_blank"
@@ -26,31 +26,50 @@
 <script setup>
 import { mainStore } from "@/store";
 import { Error } from "@icon-park/vue-next";
+import { loadCustomWallpaper } from "@/utils/customWallpaper";
 
 const store = mainStore();
 const bgUrl = ref(null);
 const imgTimeout = ref(null);
 const emit = defineEmits(["loadComplete"]);
+let customObjectUrl = null;
+const staleObjectUrls = [];
+let bgChangeToken = 0;
 
 // 壁纸随机数
 // 请依据文件夹内的图片个数修改 Math.random() 后面的第一个数字
 const bgRandom = Math.floor(Math.random() * 10 + 1);
+const defaultBgUrl = `/images/background${bgRandom}.jpg`;
 
 // 更换壁纸链接
-const changeBg = (type) => {
-  if (type == 0) {
-    bgUrl.value = `/images/background${bgRandom}.jpg`;
-  } else if (type == 1) {
-    bgUrl.value = "https://api.dujin.org/bing/1920.php";
-  } else if (type == 2) {
-    bgUrl.value = "https://api.vvhan.com/api/wallpaper/views";
-  } else if (type == 3) {
-    bgUrl.value = "https://api.vvhan.com/api/wallpaper/acg";
+const changeBg = async (type) => {
+  const token = ++bgChangeToken;
+  if (type === "custom") {
+    try {
+      const wallpaper = await loadCustomWallpaper();
+      if (token !== bgChangeToken) return;
+      if (!wallpaper) {
+        store.coverType = "0";
+        return;
+      }
+      const nextUrl = URL.createObjectURL(wallpaper);
+      bgUrl.value = nextUrl;
+      if (customObjectUrl) staleObjectUrls.push(customObjectUrl);
+      customObjectUrl = nextUrl;
+    } catch (error) {
+      console.error("读取自定义壁纸失败", error);
+      if (token === bgChangeToken) store.coverType = "0";
+    }
+  } else {
+    bgUrl.value = defaultBgUrl;
+    if (customObjectUrl) staleObjectUrls.push(customObjectUrl);
+    customObjectUrl = null;
   }
 };
 
 // 图片加载完成
 const imgLoadComplete = () => {
+  staleObjectUrls.splice(0).forEach((url) => URL.revokeObjectURL(url));
   imgTimeout.value = setTimeout(
     () => {
       store.setImgLoadStatus(true);
@@ -69,31 +88,39 @@ const imgAnimationEnd = () => {
 // 图片显示失败
 const imgLoadError = () => {
   console.error("壁纸加载失败：", bgUrl.value);
+  if (bgUrl.value === defaultBgUrl) return;
   ElMessage({
-    message: "壁纸加载失败，已临时切换回默认",
+    message: "壁纸加载失败，已切换回默认",
     icon: h(Error, {
       theme: "filled",
       fill: "#efefef",
     }),
   });
-  bgUrl.value = `/images/background${bgRandom}.jpg`;
+  store.coverType = "0";
 };
 
 // 监听壁纸切换
 watch(
-  () => store.coverType,
-  (value) => {
-    changeBg(value);
+  () => [store.coverType, store.customWallpaperRevision],
+  () => {
+    changeBg(store.coverType);
   },
 );
 
 onMounted(() => {
   // 加载壁纸
-  changeBg(store.coverType);
+  if (store.coverType !== "0" && store.coverType !== "custom") {
+    store.coverType = "0";
+  } else {
+    changeBg(store.coverType);
+  }
 });
 
 onBeforeUnmount(() => {
   clearTimeout(imgTimeout.value);
+  bgChangeToken += 1;
+  staleObjectUrls.forEach((url) => URL.revokeObjectURL(url));
+  if (customObjectUrl) URL.revokeObjectURL(customObjectUrl);
 });
 </script>
 

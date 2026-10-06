@@ -5,10 +5,22 @@
         <div class="bg-set">
           <el-radio-group v-model="coverType" text-color="#ffffff" @change="radioChange">
             <el-radio value="0" size="large" border>默认壁纸</el-radio>
-            <el-radio value="1" size="large" border>每日一图</el-radio>
-            <el-radio value="2" size="large" border>随机风景</el-radio>
-            <el-radio value="3" size="large" border>随机动漫</el-radio>
           </el-radio-group>
+          <button
+            class="add-wallpaper"
+            :class="{ active: coverType === 'custom' }"
+            type="button"
+            @click="wallpaperInput?.click()"
+          >
+            添加壁纸
+          </button>
+          <input
+            ref="wallpaperInput"
+            class="wallpaper-input"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            @change="addWallpaper"
+          />
         </div>
       </el-collapse-item>
       <el-collapse-item title="个性化调整" name="2">
@@ -90,6 +102,7 @@
 import { CheckSmall, CloseSmall, SuccessPicture } from "@icon-park/vue-next";
 import { mainStore } from "@/store";
 import { storeToRefs } from "pinia";
+import { saveCustomWallpaper } from "@/utils/customWallpaper";
 
 const store = mainStore();
 const {
@@ -105,6 +118,42 @@ const {
 
 // 默认选中项
 const activeName = ref("1");
+const wallpaperInput = ref(null);
+
+const addWallpaper = async (event) => {
+  const file = event.target.files?.[0];
+  event.target.value = "";
+  if (!file) return;
+
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    ElMessage.error("请选择 JPG、PNG 或 WebP 图片");
+    return;
+  }
+
+  try {
+    const previewUrl = URL.createObjectURL(file);
+    try {
+      await new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = resolve;
+        image.onerror = () => reject(new Error("图片无法解码"));
+        image.src = previewUrl;
+      });
+    } finally {
+      URL.revokeObjectURL(previewUrl);
+    }
+    await saveCustomWallpaper(file);
+    if (coverType.value === "custom") {
+      store.customWallpaperRevision += 1;
+    } else {
+      coverType.value = "custom";
+    }
+    ElMessage.success("壁纸添加成功");
+  } catch (error) {
+    console.error("保存自定义壁纸失败", error);
+    ElMessage.error("壁纸保存失败，请换一张图片重试");
+  }
+};
 
 // 壁纸切换
 const radioChange = () => {
@@ -120,6 +169,34 @@ const radioChange = () => {
 
 <style lang="scss" scoped>
 .setting {
+  .bg-set {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .add-wallpaper {
+      margin: 10px 16px;
+      padding: 9px 15px;
+      color: #fff;
+      font: inherit;
+      background: #ffffff26;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+
+      &:hover,
+      &:focus-visible,
+      &.active {
+        background: #ffffff06;
+        border-color: #eeeeee;
+      }
+    }
+
+    .wallpaper-input {
+      display: none;
+    }
+  }
+
   .collapse {
     border-radius: 8px;
     --el-collapse-content-bg-color: #ffffff10;

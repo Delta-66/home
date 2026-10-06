@@ -26,6 +26,10 @@ npm run dev
 
 默认在 `http://localhost:3000/` 预览。发布前运行 `npm run build`，静态文件会生成在 `dist/`。
 
+## 自定义壁纸
+
+“全局设置 → 个性壁纸”保留默认壁纸和“添加壁纸”按钮。可选择 JPG、PNG 或 WebP 图片；新图片只保存在当前浏览器，刷新后仍会显示，再次添加会替换上一张。切回“默认壁纸”即可使用仓库中的背景图片。若希望所有访客看到新图片，请替换 `public/images/background1.jpg` 至 `background10.jpg` 并重新构建。
+
 ## 添加更多歌单
 
 现有歌单继续由 `.env` 中的 `VITE_SONG_SERVER`、`VITE_SONG_TYPE` 和 `VITE_SONG_ID` 设置；`VITE_SONG_NAME` 决定它在播放器里显示的名称。打开“可播放歌曲”时会先进入这个歌单，列表上方显示名称、下方有“选择歌单”按钮。要加入其他歌单，编辑 [`src/assets/playlists.json`](./src/assets/playlists.json)，把新歌单写成数组项，例如：
