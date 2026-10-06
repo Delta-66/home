@@ -44,7 +44,7 @@
     </div>
   </div>
   <!-- 音乐列表弹窗 -->
-  <Teleport to="body">
+  <Teleport to="body" :disabled="store.innerWidth === null || store.innerWidth > 910">
     <Transition name="fade" mode="out-in">
       <div
         class="music-list"
@@ -328,7 +328,10 @@ watch(
   height: 100%;
   background-color: #00000080;
   backdrop-filter: blur(20px);
-  z-index: 1000;
+  z-index: 1;
+  @media (max-width: 910px) {
+    z-index: 1000;
+  }
   .list {
     position: absolute;
     display: flex;
