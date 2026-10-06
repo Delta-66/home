@@ -30,7 +30,7 @@ npm run dev
 
 推送 `dev` 分支会运行 [Pages 工作流](./.github/workflows/pages.yml)，用 [`.env.github-pages`](./.env.github-pages) 构建并发布到 `https://delta-66.github.io/home/`。此配置将静态资源放在 `/home/` 路径下，并保留本地 `.env` 中的开发设置。公开版播放器使用公网 Meting API，通过 QQ 音乐回调取得音频地址；无法取得播放地址的曲目会从列表中跳过。该接口由第三方提供，稳定性取决于其服务状态；如需改用自己的接口，可修改 `.env.github-pages` 中的 `VITE_SONG_API`。手动检查 Pages 构建可运行 `npm run build -- --mode github-pages`，并在命令前设置 `GITHUB_PAGES=1`。
 
-公开版天气在没有高德 Key 时，使用 ipwho.is 按访客 IP 定位，再通过 Open-Meteo 获取实时天气。页面会注明天气数据来源；本地 `.env` 中的高德 Key 不会发布。
+公开版天气使用高德 IP 定位和实时天气接口。部署时由 GitHub Pages 环境中的 `VITE_WEATHER_KEY` Secret 提供 Key，不需要将 Key 写入仓库文件。由于天气请求直接从浏览器发出，访问者仍可在网络请求中看到该 Key；请在高德控制台关注用量和访问限制。
 
 ## 自定义壁纸
 
