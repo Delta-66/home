@@ -62,7 +62,7 @@ input:focus-visible {
       rgba(9, 33, 27, 0.66) 49%,
       rgba(5, 20, 21, 0.88)
     ),
-    url("/images/background2.jpg") center/cover no-repeat;
+    url("../images/background2.jpg") center/cover no-repeat;
 }
 .background::after {
   content: "";

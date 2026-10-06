@@ -11,6 +11,7 @@ import viteCompression from "vite-plugin-compression";
 // https://vitejs.dev/config/
 export default ({ mode }) =>
   defineConfig({
+    base: process.env.GITHUB_PAGES === "1" ? "/home/" : "/",
     plugins: [
       vue(),
       AutoImport({
@@ -89,7 +90,7 @@ export default ({ mode }) =>
           ],
         },
       }),
-      viteCompression(),
+      process.env.GITHUB_PAGES !== "1" && viteCompression(),
     ],
     server: {
       port: "3000",

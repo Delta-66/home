@@ -2,12 +2,14 @@
   {
     "icon": "Blog",
     "name": "博客",
-    "link": "http://127.0.0.1:4321/"
+    "link": "http://127.0.0.1:4321/",
+    "localOnly": true
   },
   {
     "icon": "Book",
     "name": "学术简历",
-    "link": "http://127.0.0.1:4322/"
+    "link": "http://127.0.0.1:4322/",
+    "localOnly": true
   },
   {
     "icon": "CompactDisc",

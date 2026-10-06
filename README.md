@@ -8,7 +8,7 @@
 - 调整音乐播放器及相关接口的本地配置。
 - 在网站列表中加入博客和学术主页入口，移除不需要的入口。
 
-博客与学术主页是此工作区中的另外两个独立项目，**不包含在本仓库内**。目前网站列表里的两条链接指向本机 `127.0.0.1`；如果将主页部署到公网，需要在 [`src/assets/siteLinks.json`](./src/assets/siteLinks.json) 中把它们改成博客和学术主页的公开地址。
+博客与学术主页是此工作区中的另外两个独立项目，**不包含在本仓库内**。目前网站列表里的两条链接指向本机 `127.0.0.1`，标有 `localOnly`，因此只在本机打开主页时显示。等它们各自发布后，在 [`src/assets/siteLinks.json`](./src/assets/siteLinks.json) 中填入公开地址并去掉 `localOnly`。
 
 ## 本地运行
 
@@ -25,6 +25,10 @@ npm run dev
 ```
 
 默认在 `http://localhost:3000/` 预览。发布前运行 `npm run build`，静态文件会生成在 `dist/`。
+
+## GitHub Pages
+
+推送 `dev` 分支会运行 [Pages 工作流](./.github/workflows/pages.yml)，用 [`.env.github-pages`](./.env.github-pages) 构建并发布到 `https://delta-66.github.io/home/`。此配置将静态资源放在 `/home/` 路径下，使用公网音乐接口，并保留本地 `.env` 中的开发设置。公网音乐接口由第三方提供，稳定性取决于其服务状态。手动检查 Pages 构建可运行 `npm run build -- --mode github-pages`，并在命令前设置 `GITHUB_PAGES=1`。
 
 ## 自定义壁纸
 
@@ -60,7 +64,7 @@ QQ 音乐分享链接如 `https://y.qq.com/n/ryqq_v2/playlist/7909661301`，末�
 }
 ```
 
-`category` 要对应 `categories` 中的 `id`；`tags` 和 `favorite` 可省略。网址需以 `https://` 或 `http://` 开头。保存后运行 `npm run build`，刷新 `/webcollections/` 即可看到新内容。此页面会作为静态文件复制到 `dist/webcollections/`，无须单独启动服务。
+`category` 要对应 `categories` 中的 `id`；`tags` 和 `favorite` 可省略。网址需以 `https://` 或 `http://` 开头。保存后运行 `npm run build`，刷新 `/webcollections/` 即可看到新内容。此页面会作为静态文件复制到 `dist/webcollections/`，无须单独启动服务。GitHub Pages 上的网址是 `/home/webcollections/`。
 
 ## 来源与许可
 

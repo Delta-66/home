@@ -32,7 +32,7 @@ let bgChangeToken = 0;
 // 壁纸随机数
 // 请依据文件夹内的图片个数修改 Math.random() 后面的第一个数字
 const bgRandom = Math.floor(Math.random() * 3 + 1);
-const defaultBgUrl = `/images/background${bgRandom}.jpg`;
+const defaultBgUrl = `${import.meta.env.BASE_URL}images/background${bgRandom}.jpg`;
 // 更换壁纸链接
 const changeBg = async (type) => {
   const token = ++bgChangeToken;

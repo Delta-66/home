@@ -10,7 +10,7 @@
         @mouseenter="socialTip = item.tip"
         @mouseleave="socialTip = '通过这里联系我吧'"
       >
-        <img class="icon" :src="item.icon" height="24" />
+        <img class="icon" :src="socialIconUrl(item.icon)" height="24" />
       </a>
     </div>
     <span class="tip">{{ socialTip }}</span>
@@ -21,6 +21,8 @@
 import socialLinks from "@/assets/socialLinks.json";
 
 const visibleSocialLinks = computed(() => socialLinks.filter((item) => !item.hidden));
+const socialIconUrl = (icon) =>
+  icon.startsWith("/") ? `${import.meta.env.BASE_URL}${icon.slice(1)}` : icon;
 
 // 社交链接提示
 const socialTip = ref("通过这里联系我吧");

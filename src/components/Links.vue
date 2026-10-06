@@ -1,5 +1,5 @@
 <template>
-  <div v-if="siteLinks[0]" class="links">
+  <div v-if="availableSiteLinks.length" class="links">
     <div class="line">
       <Icon size="20">
         <Link />
@@ -8,7 +8,7 @@
     </div>
     <!-- 网站列表 -->
     <Swiper
-      v-if="siteLinks[0]"
+      v-if="availableSiteLinks.length"
       :modules="[Pagination, Mousewheel]"
       :slides-per-view="1"
       :space-between="40"
@@ -55,11 +55,17 @@ import siteLinks from "@/assets/siteLinks.json";
 
 const store = mainStore();
 
+const availableSiteLinks = computed(() =>
+  siteLinks.filter(
+    (item) => !item.localOnly || ["localhost", "127.0.0.1"].includes(window.location.hostname),
+  ),
+);
+
 // 计算网站链接
 const siteLinksList = computed(() => {
   const result = [];
-  for (let i = 0; i < siteLinks.length; i += 6) {
-    const subArr = siteLinks.slice(i, i + 6);
+  for (let i = 0; i < availableSiteLinks.value.length; i += 6) {
+    const subArr = availableSiteLinks.value.slice(i, i + 6);
     result.push(subArr);
   }
   return result;
@@ -90,7 +96,10 @@ const jumpLink = (data) => {
   ) {
     window.$openList();
   } else if (data.link) {
-    window.open(data.link, "_blank");
+    const link = data.link.startsWith("/")
+      ? `${import.meta.env.BASE_URL}${data.link.slice(1)}`
+      : data.link;
+    window.open(link, "_blank");
   } else {
     ElMessage({ message: `「${data.name}」链接待填写`, grouping: true });
   }
