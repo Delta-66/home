@@ -30,6 +30,8 @@ npm run dev
 
 推送 `dev` 分支会运行 [Pages 工作流](./.github/workflows/pages.yml)，用 [`.env.github-pages`](./.env.github-pages) 构建并发布到 `https://delta-66.github.io/home/`。此配置将静态资源放在 `/home/` 路径下，并保留本地 `.env` 中的开发设置。公开版播放器使用公网 Meting API，通过 QQ 音乐回调取得音频地址；无法取得播放地址的曲目会从列表中跳过。该接口由第三方提供，稳定性取决于其服务状态；如需改用自己的接口，可修改 `.env.github-pages` 中的 `VITE_SONG_API`。手动检查 Pages 构建可运行 `npm run build -- --mode github-pages`，并在命令前设置 `GITHUB_PAGES=1`。
 
+公开版天气在没有高德 Key 时，使用 ipwho.is 按访客 IP 定位，再通过 Open-Meteo 获取实时天气。页面会注明天气数据来源；本地 `.env` 中的高德 Key 不会发布。
+
 ## 自定义壁纸
 
 “全局设置 → 个性壁纸”保留“默认壁纸”和“新增壁纸（数量）”两个模式。默认模式在刷新页面时从当前的 3 张背景图中随机选择；“上传壁纸”支持一次选择多张 JPG、PNG 或 WebP 图片，加入当前浏览器的随机池。选用新增壁纸模式后，每次刷新页面会从这些图片中随机选择一张，之前添加的图片也会保留。图片存储在当前浏览器的 IndexedDB 中，换用浏览器、设备或网站地址时不会自动同步。若希望所有访客看到新图片，请替换 `public/images/background1.jpg` 至 `background3.jpg` 并重新构建；增加更多默认图片时，也需同步调整 `src/components/Background.vue` 中的随机数量。
