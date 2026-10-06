@@ -20,8 +20,8 @@
   {
     "name": "Email",
     "icon": "/images/icon/email.png",
-    "tip": "邮箱地址待填写",
-    "url": ""
+    "tip": "ssn_060531@sjtu.edu.cn",
+    "url": "mailto:ssn_060531@sjtu.edu.cn"
   },
   {
     "name": "Twitter",

@@ -89,10 +89,21 @@ export const getHitokoto = async () => {
  * 天气
  */
 
+const fetchWeatherJson = async (url) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch(url, { signal: controller.signal });
+    if (!res.ok) throw new Error(`天气接口返回 ${res.status}`);
+    return await res.json();
+  } finally {
+    clearTimeout(timeoutId);
+  }
+};
+
 // 获取高德地理位置信息
 export const getAdcode = async (key) => {
-  const res = await fetch(`https://restapi.amap.com/v3/ip?key=${key}`);
-  return await res.json();
+  return await fetchWeatherJson(`https://restapi.amap.com/v3/ip?key=${key}`);
 };
 
 // IP 无法定位时，用浏览器提供的坐标查询高德城市编码
@@ -102,14 +113,12 @@ export const getReverseGeocode = async (key, longitude, latitude) => {
     location: `${longitude},${latitude}`,
     extensions: "base",
   });
-  const res = await fetch(`https://restapi.amap.com/v3/geocode/regeo?${params}`);
-  return await res.json();
+  return await fetchWeatherJson(`https://restapi.amap.com/v3/geocode/regeo?${params}`);
 };
 
 // 获取高德地理天气信息
 export const getWeather = async (key, city) => {
-  const res = await fetch(
+  return await fetchWeatherJson(
     `https://restapi.amap.com/v3/weather/weatherInfo?key=${key}&city=${city}`,
   );
-  return await res.json();
 };
