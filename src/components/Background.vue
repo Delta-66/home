@@ -19,7 +19,7 @@
 <script setup>
 import { mainStore } from "@/store";
 import { Error } from "@icon-park/vue-next";
-import { loadCustomWallpaper } from "@/utils/customWallpaper";
+import { listCustomWallpapers, loadCustomWallpaper } from "@/utils/customWallpaper";
 
 const store = mainStore();
 const bgUrl = ref(null);
@@ -33,15 +33,15 @@ let bgChangeToken = 0;
 // 请依据文件夹内的图片个数修改 Math.random() 后面的第一个数字
 const bgRandom = Math.floor(Math.random() * 10 + 1);
 const defaultBgUrl = `/images/background${bgRandom}.jpg`;
-const isCustomWallpaper = (type) => type === "custom" || type.startsWith("custom:");
-const isDefaultWallpaper = (type) => /^default:(10|[1-9])$/.test(type);
-
 // 更换壁纸链接
 const changeBg = async (type) => {
   const token = ++bgChangeToken;
-  if (isCustomWallpaper(type)) {
+  if (type === "custom-random") {
     try {
-      const wallpaper = await loadCustomWallpaper(type);
+      const wallpapers = await listCustomWallpapers();
+      if (token !== bgChangeToken) return;
+      const selected = wallpapers[Math.floor(Math.random() * wallpapers.length)];
+      const wallpaper = selected ? await loadCustomWallpaper(selected.id) : null;
       if (token !== bgChangeToken) return;
       if (!wallpaper) {
         store.coverType = "0";
@@ -56,9 +56,7 @@ const changeBg = async (type) => {
       if (token === bgChangeToken) store.coverType = "0";
     }
   } else {
-    bgUrl.value = isDefaultWallpaper(type)
-      ? `/images/background${type.split(":")[1]}.jpg`
-      : defaultBgUrl;
+    bgUrl.value = defaultBgUrl;
     if (customObjectUrl) staleObjectUrls.push(customObjectUrl);
     customObjectUrl = null;
   }
@@ -85,7 +83,7 @@ const imgAnimationEnd = () => {
 // 图片显示失败
 const imgLoadError = () => {
   console.error("壁纸加载失败：", bgUrl.value);
-  if (!isCustomWallpaper(store.coverType)) return;
+  if (store.coverType !== "custom-random") return;
   ElMessage({
     message: "壁纸加载失败，已切换回默认",
     icon: h(Error, {
@@ -106,12 +104,9 @@ watch(
 
 onMounted(() => {
   // 加载壁纸
-  if (
-    store.coverType !== "0" &&
-    !isCustomWallpaper(store.coverType) &&
-    !isDefaultWallpaper(store.coverType)
-  ) {
-    store.coverType = "0";
+  if (store.coverType !== "0" && store.coverType !== "custom-random") {
+    store.coverType =
+      store.coverType === "custom" || store.coverType.startsWith("custom:") ? "custom-random" : "0";
   } else {
     changeBg(store.coverType);
   }

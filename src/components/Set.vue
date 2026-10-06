@@ -9,25 +9,9 @@
             text-color="#ffffff"
             @change="radioChange"
           >
-            <el-radio value="0" size="large" border>默认随机</el-radio>
-            <el-radio
-              v-for="number in 10"
-              :key="number"
-              :value="`default:${number}`"
-              size="large"
-              border
-            >
-              默认 {{ String(number).padStart(2, "0") }}
-            </el-radio>
-            <el-radio
-              v-for="wallpaper in customWallpapers"
-              :key="wallpaper.id"
-              :value="wallpaper.id"
-              :title="wallpaper.name"
-              size="large"
-              border
-            >
-              <span class="custom-wallpaper-name">{{ wallpaper.name }}</span>
+            <el-radio value="0" size="large" border>默认壁纸</el-radio>
+            <el-radio v-if="customWallpapers.length" value="custom-random" size="large" border>
+              已添加壁纸随机（{{ customWallpapers.length }}）
             </el-radio>
             <button class="add-wallpaper" type="button" @click="wallpaperInput?.click()">
               <span class="add-wallpaper-icon" aria-hidden="true"></span>
@@ -39,6 +23,7 @@
             class="wallpaper-input"
             type="file"
             accept="image/jpeg,image/png,image/webp"
+            multiple
             @change="addWallpaper"
           />
         </div>
@@ -122,7 +107,7 @@
 import { CheckSmall, CloseSmall, SuccessPicture } from "@icon-park/vue-next";
 import { mainStore } from "@/store";
 import { storeToRefs } from "pinia";
-import { listCustomWallpapers, saveCustomWallpaper } from "@/utils/customWallpaper";
+import { listCustomWallpapers, saveCustomWallpapers } from "@/utils/customWallpaper";
 
 const store = mainStore();
 const {
@@ -151,31 +136,37 @@ onMounted(async () => {
 });
 
 const addWallpaper = async (event) => {
-  const file = event.target.files?.[0];
+  const files = Array.from(event.target.files || []);
   event.target.value = "";
-  if (!file) return;
+  if (!files.length) return;
 
-  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+  if (files.some((file) => !["image/jpeg", "image/png", "image/webp"].includes(file.type))) {
     ElMessage.error("请选择 JPG、PNG 或 WebP 图片");
     return;
   }
 
   try {
-    const previewUrl = URL.createObjectURL(file);
-    try {
-      await new Promise((resolve, reject) => {
-        const image = new Image();
-        image.onload = resolve;
-        image.onerror = () => reject(new Error("图片无法解码"));
-        image.src = previewUrl;
-      });
-    } finally {
-      URL.revokeObjectURL(previewUrl);
+    for (const file of files) {
+      const previewUrl = URL.createObjectURL(file);
+      try {
+        await new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = resolve;
+          image.onerror = () => reject(new Error("图片无法解码"));
+          image.src = previewUrl;
+        });
+      } finally {
+        URL.revokeObjectURL(previewUrl);
+      }
     }
-    const id = await saveCustomWallpaper(file);
+    await saveCustomWallpapers(files);
     customWallpapers.value = await listCustomWallpapers();
-    coverType.value = id;
-    ElMessage.success("壁纸添加成功");
+    if (coverType.value === "custom-random") {
+      store.customWallpaperRevision += 1;
+    } else {
+      coverType.value = "custom-random";
+    }
+    ElMessage.success(`已新增 ${files.length} 张壁纸`);
   } catch (error) {
     console.error("保存自定义壁纸失败", error);
     ElMessage.error("壁纸保存失败，请换一张图片重试");
@@ -200,15 +191,6 @@ const radioChange = () => {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-
-    .custom-wallpaper-name {
-      display: inline-block;
-      max-width: 140px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      vertical-align: bottom;
-      white-space: nowrap;
-    }
 
     .add-wallpaper {
       display: inline-flex;

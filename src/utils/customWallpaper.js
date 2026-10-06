@@ -12,24 +12,29 @@ const openWallpaperDatabase = () =>
     request.onerror = () => reject(request.error);
   });
 
-export const saveCustomWallpaper = async (file) => {
+export const saveCustomWallpapers = async (files) => {
   const database = await openWallpaperDatabase();
   try {
-    const uniqueId =
-      globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    const id = `custom:${Date.now()}-${uniqueId}`;
+    const ids = files.map(() => {
+      const uniqueId =
+        globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      return `custom:${Date.now()}-${uniqueId}`;
+    });
     await new Promise((resolve, reject) => {
       const transaction = database.transaction(storeName, "readwrite");
-      transaction.objectStore(storeName).put(file, id);
+      const store = transaction.objectStore(storeName);
+      files.forEach((file, index) => store.put(file, ids[index]));
       transaction.oncomplete = resolve;
       transaction.onerror = () => reject(transaction.error);
       transaction.onabort = () => reject(transaction.error);
     });
-    return id;
+    return ids;
   } finally {
     database.close();
   }
 };
+
+export const saveCustomWallpaper = async (file) => (await saveCustomWallpapers([file]))[0];
 
 export const listCustomWallpapers = async () => {
   const database = await openWallpaperDatabase();
