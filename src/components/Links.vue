@@ -86,10 +86,10 @@ const jumpLink = (data) => {
     import.meta.env.VITE_SONG_API &&
     import.meta.env.VITE_SONG_SERVER === "tencent"
   ) {
-    if (store.musicIsOk && typeof window.$openList === "function") {
+    if (typeof window.$openList === "function") {
       window.$openList();
     } else {
-      ElMessage({ message: "播放器正在加载，请稍后重试", grouping: true });
+      ElMessage({ message: "播放器正在初始化，请稍后重试", grouping: true });
     }
     return;
   }

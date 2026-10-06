@@ -18,6 +18,10 @@
     @timeupdate="onTimeUp"
     @error="loadMusicError"
   />
+  <div v-else class="player-state">
+    <span>{{ loading ? "正在加载歌单..." : loadError }}</span>
+    <button v-if="!loading" type="button" @click="loadPlayerList">重试</button>
+  </div>
 </template>
 
 <script setup>
@@ -33,6 +37,8 @@ const player = ref(null);
 
 // 歌曲播放列表
 const playList = ref([]);
+const loading = ref(true);
+const loadError = ref("");
 
 // 歌曲播放项
 const playIndex = ref(0);
@@ -85,7 +91,9 @@ const listHeight = computed(() => {
 
 // 初始化播放器
 let isMounted = true;
-onMounted(async () => {
+const loadPlayerList = async () => {
+  loading.value = true;
+  loadError.value = "";
   try {
     const res = await getPlayerList(props.songServer, props.songType, props.songId);
     if (!isMounted) return;
@@ -94,16 +102,22 @@ onMounted(async () => {
   } catch (err) {
     if (!isMounted) return;
     console.error(err);
+    loadError.value = err?.message || "播放器加载失败";
     store.musicIsOk = false;
     ElMessage({
-      message: "播放器加载失败",
+      message: loadError.value,
       grouping: true,
       icon: h(PlayWrong, {
         theme: "filled",
         fill: "#efefef",
       }),
     });
+  } finally {
+    if (isMounted) loading.value = false;
   }
+};
+onMounted(() => {
+  loadPlayerList();
 });
 onBeforeUnmount(() => {
   isMounted = false;
@@ -199,6 +213,26 @@ defineExpose({ playToggle, changeVolume, changeSong, toggleList });
 </script>
 
 <style lang="scss" scoped>
+.player-state {
+  width: 80%;
+  min-height: 72px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #efefef;
+
+  button {
+    padding: 5px 12px;
+    border: 1px solid #ffffff80;
+    border-radius: 5px;
+    background: #ffffff20;
+    color: inherit;
+    cursor: pointer;
+  }
+}
+
 .aplayer {
   width: 80%;
   border-radius: 6px;

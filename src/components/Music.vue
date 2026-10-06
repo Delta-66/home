@@ -44,8 +44,16 @@
     </div>
   </div>
   <!-- 音乐列表弹窗 -->
-  <Transition name="fade" mode="out-in">
-    <div class="music-list" v-show="musicListShow" @click="closeMusicList()">
+  <Teleport to="body">
+    <Transition name="fade" mode="out-in">
+      <div
+        class="music-list"
+        v-show="musicListShow"
+        role="dialog"
+        aria-modal="true"
+        aria-label="音乐列表"
+        @click="closeMusicList()"
+      >
       <Transition name="zoom">
         <div class="list" v-show="musicListShow" @click.stop>
           <close-one
@@ -98,8 +106,9 @@
           </Transition>
         </div>
       </Transition>
-    </div>
-  </Transition>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup>
@@ -319,7 +328,7 @@ watch(
   height: 100%;
   background-color: #00000080;
   backdrop-filter: blur(20px);
-  z-index: 1;
+  z-index: 1000;
   .list {
     position: absolute;
     display: flex;
