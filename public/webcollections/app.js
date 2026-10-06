@@ -82,21 +82,17 @@ const renderLinks = () => {
     card.rel = "noopener noreferrer";
     card.setAttribute("aria-label", `打开 ${link.name}，新窗口`);
 
-    const top = createElement("div", "card-top");
-    const monogram = createElement("span", "card-monogram", link.name.slice(0, 1).toUpperCase());
     const category = createElement("span", "card-category", getCategoryName(link.category));
-    top.append(monogram, category);
 
     const body = createElement("div", "card-body");
-    body.append(createElement("h3", "card-title", link.name));
+    body.append(category, createElement("h3", "card-title", link.name));
     body.append(createElement("p", "card-description", link.description || "收藏的网址"));
 
     const footer = createElement("div", "card-footer");
     footer.append(createElement("span", "card-domain", new URL(link.url).hostname));
-    if (link.favorite) footer.append(createElement("span", "favorite-mark", "★ 常用"));
-    footer.append(createElement("span", "card-arrow", "↗"));
+    if (link.favorite) footer.append(createElement("span", "favorite-mark", "常用"));
 
-    card.append(top, body, footer);
+    card.append(body, footer);
     bookmarkGrid.append(card);
   }
 };
