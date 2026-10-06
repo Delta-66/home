@@ -131,12 +131,13 @@ const jumpTo = (url) => {
       justify-content: space-between;
 
       .logo {
-        transform: translateY(-8%);
+        display: flex;
+        align-items: center;
         font-family: "ZCOOL KuaiLe", "Yu Gothic", sans-serif;
-        padding-left: 22px;
         width: 100%;
         height: 260px;
         min-height: 140px;
+        line-height: 1.1;
         .bg {
           font-size: 5rem;
         }
