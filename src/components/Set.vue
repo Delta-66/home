@@ -12,7 +12,8 @@
             type="button"
             @click="wallpaperInput?.click()"
           >
-            添加壁纸
+            <span class="add-wallpaper-icon" aria-hidden="true">+</span>
+            <span class="add-wallpaper-label">添加壁纸</span>
           </button>
           <input
             ref="wallpaperInput"
@@ -175,14 +176,40 @@ const radioChange = () => {
     flex-wrap: wrap;
 
     .add-wallpaper {
+      display: inline-flex;
+      align-items: center;
+      box-sizing: border-box;
+      height: 40px;
       margin: 10px 16px;
-      padding: 9px 15px;
+      padding: 0 19px 0 11px;
       color: #fff;
-      font: inherit;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: var(--el-font-weight-primary);
       background: #ffffff26;
       border: 2px solid transparent;
       border-radius: 8px;
       cursor: pointer;
+      white-space: nowrap;
+
+      .add-wallpaper-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+        width: 14px;
+        height: 14px;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 1;
+        border: 2px solid #eeeeee;
+        border-radius: 50%;
+      }
+
+      .add-wallpaper-label {
+        padding-left: 8px;
+      }
 
       &:hover,
       &:focus-visible,
