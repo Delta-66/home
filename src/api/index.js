@@ -84,39 +84,3 @@ export const getWeather = async (key, city) => {
   );
   return await res.json();
 };
-
-// 无 Key 时按访客 IP 定位，再获取所在城市的实时天气
-export const getOtherWeather = async () => {
-  const locationResponse = await fetch(
-    "https://ipwho.is/?lang=zh-CN&fields=success,city,latitude,longitude",
-  );
-  if (!locationResponse.ok) throw new Error(`地区接口返回 ${locationResponse.status}`);
-  const location = await locationResponse.json();
-  if (
-    !location.success ||
-    !Number.isFinite(location.latitude) ||
-    !Number.isFinite(location.longitude)
-  ) {
-    throw new Error("地区接口没有返回有效坐标");
-  }
-
-  const params = new URLSearchParams({
-    latitude: String(location.latitude),
-    longitude: String(location.longitude),
-    current: "temperature_2m,weather_code,wind_speed_10m,wind_direction_10m",
-    timezone: "auto",
-  });
-  const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
-  if (!weatherResponse.ok) throw new Error(`天气接口返回 ${weatherResponse.status}`);
-  const result = await weatherResponse.json();
-  if (
-    !result.current ||
-    !Number.isFinite(result.current.temperature_2m) ||
-    !Number.isFinite(result.current.weather_code) ||
-    !Number.isFinite(result.current.wind_speed_10m) ||
-    !Number.isFinite(result.current.wind_direction_10m)
-  ) {
-    throw new Error("天气接口没有返回实时数据");
-  }
-  return { location, current: result.current };
-};
