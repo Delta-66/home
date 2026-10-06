@@ -4,7 +4,7 @@
   "github": "https://github.com/Delta-66/home",
   "home": "https://github.com/Delta-66/home",
   "private": true,
-  "version": "4.1.4",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
