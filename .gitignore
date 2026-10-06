@@ -13,6 +13,10 @@ dist-ssr
 *.local
 .env
 
+# 本地保留的原作者 README 参考文件
+/README_ORIGINAL.md
+/README_ORIGINAL_EN.md
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

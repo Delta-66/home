@@ -1,6 +1,6 @@
 # 硫硫氮の主页
 
-这是我在 [imsyy/home](https://github.com/imsyy/home)（「無名の主页」）基础上修改的个人主页。保留了原项目的 Git 历史和 [MIT 许可证](./LICENSE)，并在此说明来源。原作者的说明文档作为参考保存在 [原始 README（中文）](./README_ORIGINAL.md) 和 [原始 README（英文）](./README_ORIGINAL_EN.md)。
+这是我在 [imsyy/home](https://github.com/imsyy/home)（「無名の主页」）基础上修改的个人主页。保留了原项目的 Git 历史和 [MIT 许可证](./LICENSE)，并在此说明来源。原作者的说明文档可参阅其仓库中的 [中文 README](https://github.com/imsyy/home/blob/v4.1.4/README.md) 和 [英文 README](https://github.com/imsyy/home/blob/v4.1.4/README_EN.md)；本地参考副本不会提交到此仓库。
 
 ## 我的修改
 
@@ -30,7 +30,7 @@ npm run dev
 
 推送 `dev` 分支会运行 [Pages 工作流](./.github/workflows/pages.yml)，用 [`.env.github-pages`](./.env.github-pages) 构建并发布到 `https://delta-66.github.io/home/`。此配置将静态资源放在 `/home/` 路径下，并保留本地 `.env` 中的开发设置。公开版播放器使用 `music.waveyo.cn` 提供的 Meting API，通过 QQ 音乐回调取得音频地址；无法取得播放地址的曲目会从列表中跳过。该接口由第三方提供，稳定性取决于其服务状态；如需改用自己的接口，可修改 `.env.github-pages` 中的 `VITE_SONG_API`。手动检查 Pages 构建可运行 `npm run build -- --mode github-pages`，并在命令前设置 `GITHUB_PAGES=1`。
 
-公开版天气使用高德 IP 定位和实时天气接口。若手机的 IP 无法定位，会尝试浏览器定位；定位不可用时可手动输入城市。天气数据始终由高德提供。部署时由 GitHub Pages 环境中的 `VITE_WEATHER_KEY` Secret 提供 Key，不需要将 Key 写入仓库文件。由于天气请求直接从浏览器发出，访问者仍可在网络请求中看到该 Key；请在高德控制台关注用量和访问限制。
+公开版天气使用高德 IP 定位和实时天气接口。自动获取天气失败时，页面会询问是否允许使用浏览器定位；拒绝定位或定位后仍获取失败时不再显示天气。天气数据始终由高德提供。部署时由 GitHub Pages 环境中的 `VITE_WEATHER_KEY` Secret 提供 Key，不需要将 Key 写入仓库文件。由于天气请求直接从浏览器发出，访问者仍可在网络请求中看到该 Key；请在高德控制台关注用量和访问限制。
 
 ## 自定义壁纸
 
