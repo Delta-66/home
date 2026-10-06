@@ -17,7 +17,7 @@
           <span v-if="siteUrl[1]" class="sm">.{{ siteUrl[1] }}</span>
         </div>
         <div class="version">
-          <div class="num">v{{ config.version.replace(/\.0$/, "") }}</div>
+          <div class="num">v&nbsp;{{ config.version.replace(/\.0$/, "") }}</div>
           <el-tooltip content="Github 源代码仓库" placement="right" :show-arrow="false">
             <github-one class="github" theme="outline" size="24" @click="jumpTo(config.github)" />
           </el-tooltip>
