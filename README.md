@@ -28,7 +28,7 @@ npm run dev
 
 ## GitHub Pages
 
-推送 `dev` 分支会运行 [Pages 工作流](./.github/workflows/pages.yml)，用 [`.env.github-pages`](./.env.github-pages) 构建并发布到 `https://delta-66.github.io/home/`。此配置将静态资源放在 `/home/` 路径下，使用公网音乐接口，并保留本地 `.env` 中的开发设置。公网音乐接口由第三方提供，稳定性取决于其服务状态。手动检查 Pages 构建可运行 `npm run build -- --mode github-pages`，并在命令前设置 `GITHUB_PAGES=1`。
+推送 `dev` 分支会运行 [Pages 工作流](./.github/workflows/pages.yml)，用 [`.env.github-pages`](./.env.github-pages) 构建并发布到 `https://delta-66.github.io/home/`。此配置将静态资源放在 `/home/` 路径下，并保留本地 `.env` 中的开发设置。GitHub Pages 不能运行本机的音乐接口，因此公开版暂时隐藏内嵌播放器，“音乐”入口改为打开 QQ 歌单；取得自己的公网 Meting API 后，在 `.env.github-pages` 中填写 `VITE_SONG_API` 即可恢复。手动检查 Pages 构建可运行 `npm run build -- --mode github-pages`，并在命令前设置 `GITHUB_PAGES=1`。
 
 ## 自定义壁纸
 

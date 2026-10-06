@@ -81,7 +81,11 @@ const siteIcon = {
 
 // 链接跳转
 const jumpLink = (data) => {
-  if (data.name === "音乐" && import.meta.env.VITE_SONG_SERVER === "tencent") {
+  if (
+    data.name === "音乐" &&
+    import.meta.env.VITE_SONG_API &&
+    import.meta.env.VITE_SONG_SERVER === "tencent"
+  ) {
     if (store.musicIsOk && typeof window.$openList === "function") {
       window.$openList();
     } else {
@@ -91,6 +95,7 @@ const jumpLink = (data) => {
   }
   if (
     data.name === "音乐" &&
+    import.meta.env.VITE_SONG_API &&
     store.musicClick &&
     typeof window.$openList === "function"
   ) {

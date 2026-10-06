@@ -43,7 +43,9 @@ const currentTime = ref({});
 const timeInterval = ref(null);
 
 // 播放器 id
-const playerHasId = import.meta.env.VITE_SONG_ID || additionalPlaylists.some((playlist) => playlist.id);
+const playerHasId =
+  import.meta.env.VITE_SONG_API &&
+  (import.meta.env.VITE_SONG_ID || additionalPlaylists.some((playlist) => playlist.id));
 
 // 更新时间
 const updateTimeData = () => {
