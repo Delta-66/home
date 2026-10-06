@@ -30,13 +30,22 @@ export const getPlayerList = async (server, type, id) => {
       jsonpData.req_0.data.sip[0]
     ).replace("http://", "https://");
 
-    return data.map((v, i) => ({
-      name: v.name || v.title,
-      artist: v.artist || v.author,
-      url: domain + jsonpData.req_0.data.midurlinfo[i].purl,
-      cover: v.cover || v.pic,
-      lrc: v.lrc,
-    }));
+    const playableSongs = data
+      .map((v, i) => {
+        const purl = jsonpData.req_0.data.midurlinfo[i]?.purl;
+        return purl
+          ? {
+              name: v.name || v.title,
+              artist: v.artist || v.author,
+              url: domain + purl,
+              cover: v.cover || v.pic,
+              lrc: v.lrc,
+            }
+          : null;
+      })
+      .filter(Boolean);
+    if (!playableSongs.length) throw new Error("音乐接口没有返回可播放歌曲");
+    return playableSongs;
   } else {
     return data.map((v) => ({
       name: v.name || v.title,
