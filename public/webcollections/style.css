@@ -113,10 +113,15 @@ input:focus-visible {
   align-items: center;
   min-height: 320px;
   padding: 54px 0 56px;
+  position: sticky;
+  top: 16px;
+  z-index: 0;
+  perspective: 1100px;
 }
 .hero-copy {
   position: relative;
   z-index: 1;
+  transform-origin: left center;
 }
 .eyebrow,
 .section-kicker {
@@ -156,6 +161,8 @@ input:focus-visible {
   line-height: 1.9;
 }
 .collection-layout {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 235px minmax(0, 1fr);
   gap: 45px;
@@ -496,6 +503,9 @@ input:focus-visible {
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .hero {
+    position: static;
+  }
   *,
   *::before,
   *::after {

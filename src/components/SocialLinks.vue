@@ -1,9 +1,9 @@
 <template>
   <!-- 社交链接 -->
-  <div v-if="socialLinks.length" class="social">
+  <div v-if="visibleSocialLinks.length" class="social">
     <div class="link">
       <a
-        v-for="item in socialLinks"
+        v-for="item in visibleSocialLinks"
         :key="item.name"
         href="#"
         @click.prevent="jumpSocial(item)"
@@ -19,6 +19,8 @@
 
 <script setup>
 import socialLinks from "@/assets/socialLinks.json";
+
+const visibleSocialLinks = computed(() => socialLinks.filter((item) => !item.hidden));
 
 // 社交链接提示
 const socialTip = ref("通过这里联系我吧");

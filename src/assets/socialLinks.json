@@ -27,12 +27,14 @@
     "name": "Twitter",
     "icon": "/images/icon/twitter.png",
     "tip": "Twitter 链接待填写",
-    "url": ""
+    "url": "",
+    "hidden": true
   },
   {
     "name": "Telegram",
     "icon": "/images/icon/telegram.png",
     "tip": "Telegram 链接待填写",
-    "url": ""
+    "url": "",
+    "hidden": true
   }
 ]

@@ -5,6 +5,8 @@ const resultCount = document.querySelector("#result-count");
 const collectionTitle = document.querySelector("#collection-title");
 const emptyState = document.querySelector("#empty-state");
 const loadError = document.querySelector("#load-error");
+const collectionLayout = document.querySelector(".collection-layout");
+const heroCopy = document.querySelector(".hero-copy");
 
 let categories = [];
 let links = [];
@@ -135,3 +137,25 @@ const loadBookmarks = async () => {
 };
 
 loadBookmarks();
+
+if (collectionLayout && heroCopy && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  let scrollFrame = 0;
+  const updateLayers = () => {
+    scrollFrame = 0;
+    const distance = Math.max(320, Math.min(window.innerHeight * 0.5, 480));
+    const progress = Math.min(1, Math.max(0, window.scrollY / distance));
+
+    heroCopy.style.transform = `translate3d(0, ${(-24 * progress).toFixed(1)}px, ${(-160 * progress).toFixed(1)}px)`;
+    heroCopy.style.opacity = (1 - progress * 0.58).toFixed(3);
+    heroCopy.style.filter = `blur(${(progress * 1.5).toFixed(2)}px)`;
+    collectionLayout.style.transform = `translate3d(0, ${(-56 * progress).toFixed(1)}px, 0)`;
+    collectionLayout.style.boxShadow = `0 ${24 + Math.round(progress * 22)}px ${80 + Math.round(progress * 30)}px rgba(0, 0, 0, ${(0.17 + progress * 0.15).toFixed(3)})`;
+  };
+  const scheduleLayers = () => {
+    if (!scrollFrame) scrollFrame = requestAnimationFrame(updateLayers);
+  };
+
+  updateLayers();
+  window.addEventListener("scroll", scheduleLayers, { passive: true });
+  window.addEventListener("resize", scheduleLayers);
+}
