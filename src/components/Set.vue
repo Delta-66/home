@@ -3,18 +3,37 @@
     <el-collapse class="collapse" v-model="activeName" accordion>
       <el-collapse-item title="个性壁纸" name="1">
         <div class="bg-set">
-          <el-radio-group v-model="coverType" text-color="#ffffff" @change="radioChange">
-            <el-radio value="0" size="large" border>默认壁纸</el-radio>
-          </el-radio-group>
-          <button
-            class="add-wallpaper"
-            :class="{ active: coverType === 'custom' }"
-            type="button"
-            @click="wallpaperInput?.click()"
+          <el-radio-group
+            v-model="coverType"
+            class="wallpaper-options"
+            text-color="#ffffff"
+            @change="radioChange"
           >
-            <span class="add-wallpaper-icon" aria-hidden="true"></span>
-            <span class="add-wallpaper-label">添加壁纸</span>
-          </button>
+            <el-radio value="0" size="large" border>默认随机</el-radio>
+            <el-radio
+              v-for="number in 10"
+              :key="number"
+              :value="`default:${number}`"
+              size="large"
+              border
+            >
+              默认 {{ String(number).padStart(2, "0") }}
+            </el-radio>
+            <el-radio
+              v-for="wallpaper in customWallpapers"
+              :key="wallpaper.id"
+              :value="wallpaper.id"
+              :title="wallpaper.name"
+              size="large"
+              border
+            >
+              <span class="custom-wallpaper-name">{{ wallpaper.name }}</span>
+            </el-radio>
+            <button class="add-wallpaper" type="button" @click="wallpaperInput?.click()">
+              <span class="add-wallpaper-icon" aria-hidden="true"></span>
+              <span class="add-wallpaper-label">新增壁纸</span>
+            </button>
+          </el-radio-group>
           <input
             ref="wallpaperInput"
             class="wallpaper-input"
@@ -103,7 +122,7 @@
 import { CheckSmall, CloseSmall, SuccessPicture } from "@icon-park/vue-next";
 import { mainStore } from "@/store";
 import { storeToRefs } from "pinia";
-import { saveCustomWallpaper } from "@/utils/customWallpaper";
+import { listCustomWallpapers, saveCustomWallpaper } from "@/utils/customWallpaper";
 
 const store = mainStore();
 const {
@@ -120,6 +139,16 @@ const {
 // 默认选中项
 const activeName = ref("1");
 const wallpaperInput = ref(null);
+const customWallpapers = ref([]);
+
+onMounted(async () => {
+  try {
+    customWallpapers.value = await listCustomWallpapers();
+  } catch (error) {
+    console.error("读取自定义壁纸列表失败", error);
+    ElMessage.error("已添加的壁纸读取失败");
+  }
+});
 
 const addWallpaper = async (event) => {
   const file = event.target.files?.[0];
@@ -143,12 +172,9 @@ const addWallpaper = async (event) => {
     } finally {
       URL.revokeObjectURL(previewUrl);
     }
-    await saveCustomWallpaper(file);
-    if (coverType.value === "custom") {
-      store.customWallpaperRevision += 1;
-    } else {
-      coverType.value = "custom";
-    }
+    const id = await saveCustomWallpaper(file);
+    customWallpapers.value = await listCustomWallpapers();
+    coverType.value = id;
     ElMessage.success("壁纸添加成功");
   } catch (error) {
     console.error("保存自定义壁纸失败", error);
@@ -174,6 +200,15 @@ const radioChange = () => {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+
+    .custom-wallpaper-name {
+      display: inline-block;
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: bottom;
+      white-space: nowrap;
+    }
 
     .add-wallpaper {
       display: inline-flex;
@@ -229,8 +264,7 @@ const radioChange = () => {
       }
 
       &:hover,
-      &:focus-visible,
-      &.active {
+      &:focus-visible {
         background: #ffffff06;
         border-color: #eeeeee;
       }
@@ -283,6 +317,13 @@ const radioChange = () => {
         }
         .el-radio-group {
           justify-content: space-between;
+
+          &.wallpaper-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            width: 100%;
+          }
 
           .el-radio {
             margin: 10px 16px;

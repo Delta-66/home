@@ -11,14 +11,7 @@
     />
     <div :class="store.backgroundShow ? 'gray hidden' : 'gray'" />
     <Transition name="fade" mode="out-in">
-      <a
-        v-if="store.backgroundShow"
-        class="down"
-        :href="bgUrl"
-        target="_blank"
-      >
-        下载壁纸
-      </a>
+      <a v-if="store.backgroundShow" class="down" :href="bgUrl" target="_blank"> 下载壁纸 </a>
     </Transition>
   </div>
 </template>
@@ -40,13 +33,15 @@ let bgChangeToken = 0;
 // 请依据文件夹内的图片个数修改 Math.random() 后面的第一个数字
 const bgRandom = Math.floor(Math.random() * 10 + 1);
 const defaultBgUrl = `/images/background${bgRandom}.jpg`;
+const isCustomWallpaper = (type) => type === "custom" || type.startsWith("custom:");
+const isDefaultWallpaper = (type) => /^default:(10|[1-9])$/.test(type);
 
 // 更换壁纸链接
 const changeBg = async (type) => {
   const token = ++bgChangeToken;
-  if (type === "custom") {
+  if (isCustomWallpaper(type)) {
     try {
-      const wallpaper = await loadCustomWallpaper();
+      const wallpaper = await loadCustomWallpaper(type);
       if (token !== bgChangeToken) return;
       if (!wallpaper) {
         store.coverType = "0";
@@ -61,7 +56,9 @@ const changeBg = async (type) => {
       if (token === bgChangeToken) store.coverType = "0";
     }
   } else {
-    bgUrl.value = defaultBgUrl;
+    bgUrl.value = isDefaultWallpaper(type)
+      ? `/images/background${type.split(":")[1]}.jpg`
+      : defaultBgUrl;
     if (customObjectUrl) staleObjectUrls.push(customObjectUrl);
     customObjectUrl = null;
   }
@@ -88,7 +85,7 @@ const imgAnimationEnd = () => {
 // 图片显示失败
 const imgLoadError = () => {
   console.error("壁纸加载失败：", bgUrl.value);
-  if (bgUrl.value === defaultBgUrl) return;
+  if (!isCustomWallpaper(store.coverType)) return;
   ElMessage({
     message: "壁纸加载失败，已切换回默认",
     icon: h(Error, {
@@ -109,7 +106,11 @@ watch(
 
 onMounted(() => {
   // 加载壁纸
-  if (store.coverType !== "0" && store.coverType !== "custom") {
+  if (
+    store.coverType !== "0" &&
+    !isCustomWallpaper(store.coverType) &&
+    !isDefaultWallpaper(store.coverType)
+  ) {
     store.coverType = "0";
   } else {
     changeBg(store.coverType);
