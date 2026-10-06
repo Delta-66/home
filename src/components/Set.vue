@@ -11,11 +11,11 @@
           >
             <el-radio value="0" size="large" border>默认壁纸</el-radio>
             <el-radio v-if="customWallpapers.length" value="custom-random" size="large" border>
-              已添加壁纸随机（{{ customWallpapers.length }}）
+              新增壁纸（{{ customWallpapers.length }}）
             </el-radio>
             <button class="add-wallpaper" type="button" @click="wallpaperInput?.click()">
               <span class="add-wallpaper-icon" aria-hidden="true"></span>
-              <span class="add-wallpaper-label">新增壁纸</span>
+              <span class="add-wallpaper-label">上传壁纸</span>
             </button>
           </el-radio-group>
           <input
