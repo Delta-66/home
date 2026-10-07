@@ -49,17 +49,20 @@
                   全部收藏 <span id="result-count" class="result-count">00</span>
                 </h2>
               </div>
-              <label class="search-box">
-                <span class="search-icon" aria-hidden="true">⌕</span>
-                <span class="visually-hidden">搜索收藏的网址</span>
-                <input
-                  id="search-input"
-                  type="search"
-                  placeholder="搜索网站或关键词"
-                  autocomplete="off"
-                />
-                <span class="search-hint" aria-hidden="true">/</span>
-              </label>
+              <div class="library-actions">
+                <label class="search-box">
+                  <span class="search-icon" aria-hidden="true">⌕</span>
+                  <span class="visually-hidden">搜索收藏的网址</span>
+                  <input
+                    id="search-input"
+                    type="search"
+                    placeholder="搜索网站或关键词"
+                    autocomplete="off"
+                  />
+                  <span class="search-hint" aria-hidden="true">/</span>
+                </label>
+                <button id="add-link-button" class="add-link-button" type="button" disabled>＋ 添加网址</button>
+              </div>
             </div>
             <div id="bookmark-grid" class="bookmark-grid"></div>
             <div id="empty-state" class="empty-state" hidden>
@@ -72,6 +75,29 @@
           </section>
         </div>
       </main>
+
+      <dialog id="add-link-dialog" class="add-link-dialog" aria-labelledby="add-link-title">
+        <form id="add-link-form">
+          <div class="dialog-heading">
+            <div>
+              <div class="section-kicker">NEW COLLECTION / 新收藏</div>
+              <h2 id="add-link-title">添加网址</h2>
+            </div>
+            <button id="close-link-dialog" class="dialog-close" type="button" aria-label="关闭">×</button>
+          </div>
+          <p id="dialog-note" class="dialog-note">新增网址只保存在当前浏览器，不会同步到网站的公开收藏。</p>
+          <label class="form-field">网站名称 <input name="name" type="text" maxlength="80" required autocomplete="off" /></label>
+          <label class="form-field">网址 <input name="url" type="url" placeholder="https://example.com/" required autocomplete="url" /></label>
+          <label class="form-field">简介（可选） <input name="description" type="text" maxlength="200" /></label>
+          <label class="form-field">分类 <select id="link-category" name="category" required></select></label>
+          <label class="favorite-field"><input name="favorite" type="checkbox" /> 标记为常用网站</label>
+          <p id="form-error" class="form-error" role="alert" hidden></p>
+          <div class="dialog-actions">
+            <button id="cancel-link-dialog" class="cancel-button" type="button">取消</button>
+            <button class="save-button" type="submit">保存网址</button>
+          </div>
+        </form>
+      </dialog>
 
       <footer class="site-footer">
         <span>硫硫氮 · 网址集</span><span>COLLECTED WITH CURIOSITY</span>

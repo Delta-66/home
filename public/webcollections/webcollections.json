@@ -1,8 +1,17 @@
 {
   "categories": [
-    { "id": "research", "name": "学术研究" },
-    { "id": "development", "name": "开发工具" },
-    { "id": "daily", "name": "日常工具" }
+    {
+      "id": "research",
+      "name": "学术研究"
+    },
+    {
+      "id": "development",
+      "name": "开发工具"
+    },
+    {
+      "id": "daily",
+      "name": "日常工具"
+    }
   ],
   "links": [
     {
@@ -10,7 +19,10 @@
       "url": "https://arxiv.org/",
       "description": "查找和阅读开放获取的学术论文预印本。",
       "category": "research",
-      "tags": ["论文", "检索"],
+      "tags": [
+        "论文",
+        "检索"
+      ],
       "favorite": true
     },
     {
@@ -18,14 +30,20 @@
       "url": "https://www.zotero.org/",
       "description": "收集、整理和引用研究资料。",
       "category": "research",
-      "tags": ["文献", "管理"]
+      "tags": [
+        "文献",
+        "管理"
+      ]
     },
     {
       "name": "GitHub",
       "url": "https://github.com/",
       "description": "浏览代码项目、保存灵感和协作开发。",
       "category": "development",
-      "tags": ["代码", "项目"],
+      "tags": [
+        "代码",
+        "项目"
+      ],
       "favorite": true
     },
     {
@@ -33,21 +51,38 @@
       "url": "https://developer.mozilla.org/",
       "description": "查阅 Web 技术文档与示例。",
       "category": "development",
-      "tags": ["文档", "前端"]
+      "tags": [
+        "文档",
+        "前端"
+      ]
     },
     {
       "name": "DeepL",
       "url": "https://www.deepl.com/translator",
       "description": "快速翻译短句和文档。",
       "category": "daily",
-      "tags": ["翻译", "写作"]
+      "tags": [
+        "翻译",
+        "写作"
+      ]
     },
     {
       "name": "Excalidraw",
       "url": "https://excalidraw.com/",
       "description": "随手画草图、流程图和思路。",
       "category": "daily",
-      "tags": ["绘图", "灵感"]
+      "tags": [
+        "绘图",
+        "灵感"
+      ]
+    },
+    {
+      "name": "Deepseek",
+      "url": "https://www.deepseek.com/",
+      "description": "ds主页",
+      "category": "daily",
+      "favorite": true,
+      "localAdded": true
     }
   ]
 }

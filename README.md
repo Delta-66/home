@@ -26,6 +26,8 @@ npm run dev
 
 默认在 `http://localhost:3000/` 预览。发布前运行 `npm run build`，静态文件会生成在 `dist/`。
 
+要在本地直接保存和删除网址集里的网址，需要 Python 3。先运行 `npm run build`，再运行 `npm run serve:local`，打开 `http://localhost:3000/webcollections/`。该命令使用仓库内的 [`scripts/local_server.py`](./scripts/local_server.py) 提供文件保存接口。
+
 ## GitHub Pages
 
 推送 `dev` 分支会运行 [Pages 工作流](./.github/workflows/pages.yml)，用 [`.env.github-pages`](./.env.github-pages) 构建并发布到 `https://delta-66.github.io/home/`。此配置将静态资源放在 `/home/` 路径下，并保留本地 `.env` 中的开发设置。公开版播放器使用 `music.waveyo.cn` 提供的 Meting API，通过 QQ 音乐回调取得音频地址；无法取得播放地址的曲目会从列表中跳过。该接口由第三方提供，稳定性取决于其服务状态；如需改用自己的接口，可修改 `.env.github-pages` 中的 `VITE_SONG_API`。手动检查 Pages 构建可运行 `npm run build -- --mode github-pages`，并在命令前设置 `GITHUB_PAGES=1`。
@@ -51,7 +53,9 @@ QQ 音乐分享链接如 `https://y.qq.com/n/ryqq_v2/playlist/7909661301`，末�
 
 ## 网址集
 
-主页中的“网址集”入口打开 `/webcollections/`，可按分类浏览、筛选常用网站或搜索。网址内容在 [`public/webcollections/webcollections.json`](./public/webcollections/webcollections.json) 中维护；当前六条为示例收藏，可以直接替换。
+主页中的“网址集”入口打开 `/webcollections/`，可按分类浏览、筛选常用网站或搜索。网址内容在 [`public/webcollections/webcollections.json`](./public/webcollections/webcollections.json) 中维护，可以直接替换。
+
+页面上的“添加网址”按钮支持选择分类和标记常用。通过 `npm run serve:local` 或工作区的 `启动本地网站.cmd` 打开 `http://localhost:3000/webcollections/` 时，新增网址直接写入本仓库的 `public/webcollections/webcollections.json`；所有网址（包括原有网址）都可从页面删除，删除也会写入该文件。刷新本地页面后更改仍会保留；重新构建后也会进入网站的公开收藏。在 GitHub Pages 等纯静态环境中，新增内容只保存在当前浏览器，只能删除当前浏览器新增的网址，不会同步给其他访客或设备。
 
 在 `categories` 中添加分类，再在 `links` 中添加网址。例如：
 
