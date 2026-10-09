@@ -2,15 +2,23 @@
   "categories": [
     {
       "id": "research",
-      "name": "学术研究"
+      "name": "学术网站"
     },
     {
       "id": "development",
       "name": "开发工具"
     },
     {
-      "id": "daily",
-      "name": "日常工具"
+      "id": "hobby",
+      "name": "兴趣爱好"
+    },
+    {
+      "id": "AI",
+      "name": "AI工具"
+    },
+    {
+      "id": "art",
+      "name": "创作工具"
     }
   ],
   "links": [
@@ -22,17 +30,6 @@
       "tags": [
         "论文",
         "检索"
-      ],
-      "favorite": true
-    },
-    {
-      "name": "Zotero",
-      "url": "https://www.zotero.org/",
-      "description": "收集、整理和引用研究资料。",
-      "category": "research",
-      "tags": [
-        "文献",
-        "管理"
       ]
     },
     {
@@ -43,8 +40,7 @@
       "tags": [
         "代码",
         "项目"
-      ],
-      "favorite": true
+      ]
     },
     {
       "name": "MDN Web Docs",
@@ -57,20 +53,10 @@
       ]
     },
     {
-      "name": "DeepL",
-      "url": "https://www.deepl.com/translator",
-      "description": "快速翻译短句和文档。",
-      "category": "daily",
-      "tags": [
-        "翻译",
-        "写作"
-      ]
-    },
-    {
       "name": "Excalidraw",
       "url": "https://excalidraw.com/",
       "description": "随手画草图、流程图和思路。",
-      "category": "daily",
+      "category": "art",
       "tags": [
         "绘图",
         "灵感"
@@ -80,9 +66,20 @@
       "name": "Deepseek",
       "url": "https://www.deepseek.com/",
       "description": "ds主页",
-      "category": "daily",
+      "category": "AI",
       "favorite": true,
-      "localAdded": true
+      "localAdded": true,
+      "tags": [
+        "AI",
+        "灵感"
+      ]
+    },
+    {
+      "name": "B站",
+      "url": "https://www.bilibili.com/",
+      "description": "B站官网",
+      "category": "hobby",
+      "favorite": true
     }
   ]
 }

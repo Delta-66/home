@@ -22,7 +22,7 @@ let categories = [];
 let links = [];
 let siteLinks = [];
 let userLinks = [];
-let selectedCategory = "all";
+let selectedCategory = "";
 let fileSaveAvailable = false;
 
 const getHttpUrl = (value) => {
@@ -87,12 +87,14 @@ const createElement = (tag, className, text) => {
 const getCategoryName = (categoryId) =>
   categories.find((category) => category.id === categoryId)?.name || "其他收藏";
 
+const getLinkCategory = (link) =>
+  categories.some((category) => category.id === link.category) ? link.category : "other";
+
 const getVisibleLinks = () => {
   const query = searchInput.value.trim().toLocaleLowerCase();
   return links.filter((link) => {
     const categoryMatches =
-      selectedCategory === "all" ||
-      (selectedCategory === "favorites" ? link.favorite : link.category === selectedCategory);
+      selectedCategory === "favorites" ? link.favorite : getLinkCategory(link) === selectedCategory;
     const searchText = [link.name, link.description, link.url, ...(link.tags || [])]
       .join(" ")
       .toLocaleLowerCase();
@@ -103,13 +105,18 @@ const getVisibleLinks = () => {
 const renderCategories = () => {
   categoryList.replaceChildren();
   const items = [
-    { id: "all", name: "全部收藏", count: links.length },
     { id: "favorites", name: "常用网站", count: links.filter((link) => link.favorite).length },
     ...categories.map((category) => ({
       ...category,
-      count: links.filter((link) => link.category === category.id).length,
+      count: links.filter((link) => getLinkCategory(link) === category.id).length,
     })),
   ];
+  if (!categories.some((category) => category.id === "other") && links.some((link) => getLinkCategory(link) === "other")) {
+    items.push({ id: "other", name: "其他收藏", count: links.filter((link) => getLinkCategory(link) === "other").length });
+  }
+  if (!items.some((item) => item.id === selectedCategory)) {
+    selectedCategory = categories[0]?.id || items.find((item) => item.id !== "favorites")?.id || "favorites";
+  }
 
   for (const item of items) {
     const button = createElement("button", "category-button");
@@ -133,12 +140,7 @@ const renderLinks = () => {
   const visibleLinks = getVisibleLinks();
   bookmarkGrid.replaceChildren();
   resultCount.textContent = String(visibleLinks.length).padStart(2, "0");
-  const currentName =
-    selectedCategory === "all"
-      ? "全部收藏"
-      : selectedCategory === "favorites"
-        ? "常用网站"
-        : getCategoryName(selectedCategory);
+  const currentName = selectedCategory === "favorites" ? "常用网站" : getCategoryName(selectedCategory);
   collectionTitle.firstChild.textContent = `${currentName} `;
   emptyState.hidden = visibleLinks.length > 0;
 
@@ -198,6 +200,9 @@ const renderLinks = () => {
 searchInput.addEventListener("input", renderLinks);
 addLinkButton.addEventListener("click", () => {
   addLinkForm.reset();
+  if (categories.some((category) => category.id === selectedCategory)) {
+    linkCategory.value = selectedCategory;
+  }
   formError.hidden = true;
   addLinkDialog.showModal();
   addLinkForm.elements.name.focus();
@@ -248,7 +253,7 @@ addLinkForm.addEventListener("submit", async (event) => {
   } finally {
     saveLinkButton.disabled = false;
   }
-  selectedCategory = "all";
+  selectedCategory = newLink.category;
   searchInput.value = "";
   renderCategories();
   renderLinks();
